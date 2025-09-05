@@ -9,6 +9,10 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record CreatePrescriptionRequest(
+
+
+        Long id,
+
         @NotNull(message = "Prescription date is required")
         LocalDate prescriptionDate,
 
@@ -17,7 +21,7 @@ public record CreatePrescriptionRequest(
 
         @Min(value = 0, message = "Age must be positive")
         @Max(value = 120, message = "Age must be less than or equal to 120")
-        int patientAge,
+        Integer patientAge,
 
         @NotNull(message = "Patient gender is required")
         Gender patientGender,

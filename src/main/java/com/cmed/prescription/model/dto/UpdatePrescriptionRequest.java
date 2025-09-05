@@ -9,6 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record UpdatePrescriptionRequest (
+
+        Long id,
+
         @NotNull(message = "Prescription date is required")
         LocalDate prescriptionDate,
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}">Prescription Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}"></h1>
+
+    <!-- CREATE FORM -->
+    <form th:if="${prescription.id == null}"
+          th:object="${prescription}"
+          th:action="@{/prescriptions}"
+          method="post"
+          class="prescription-form">
+
+        <div>
+            <label>Prescription Date:</label>
+            <input type="date" th:field="*{prescriptionDate}" required>
+        </div>
+        <div>
+            <label>Patient Name:</label>
+            <input type="text" th:field="*{patientName}" required>
+        </div>
+        <div>
+            <label>Patient Age:</label>
+            <input type="number" th:field="*{patientAge}" min="0" max="120" required>
+        </div>
+        <div>
+            <label>Gender:</label>
+            <select th:field="*{patientGender}" required>
+                <option th:value="MALE">Male</option>
+                <option th:value="FEMALE">Female</option>
+                <option th:value="OTHER">Other</option>
+            </select>
+        </div>
+        <div>
+            <label>Diagnosis:</label>
+            <textarea th:field="*{diagnosis}"></textarea>
+        </div>
+        <div>
+            <label>Medicines:</label>
+            <textarea th:field="*{medicines}"></textarea>
+        </div>
+        <div>
+            <label>Next Visit Date:</label>
+            <input type="date" th:field="*{nextVisitDate}">
+        </div>
+        <button type="submit">Save Prescription</button>
+    </form>
+
+    <!-- EDIT FORM -->
+    <form th:if="${prescription.id != null}"
+          th:object="${prescription}"
+          th:action="@{/prescriptions/{id}(id=${prescription.id})}"
+          method="post"
+          class="prescription-form">
+
+        <!-- Hidden field to bind ID -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <div>
+            <label>Prescription Date:</label>
+            <input type="date" th:field="*{prescriptionDate}" required>
+        </div>
+        <div>
+            <label>Patient Name:</label>
+            <input type="text" th:field="*{patientName}" required>
+        </div>
+        <div>
+            <label>Patient Age:</label>
+            <input type="number" th:field="*{patientAge}" min="0" max="120" required>
+        </div>
+        <div>
+            <label>Gender:</label>
+            <select th:field="*{patientGender}" required>
+                <option th:value="MALE">Male</option>
+                <option th:value="FEMALE">Female</option>
+                <option th:value="OTHER">Other</option>
+            </select>
+        </div>
+        <div>
+            <label>Diagnosis:</label>
+            <textarea th:field="*{diagnosis}"></textarea>
+        </div>
+        <div>
+            <label>Medicines:</label>
+            <textarea th:field="*{medicines}"></textarea>
+        </div>
+        <div>
+            <label>Next Visit Date:</label>
+            <input type="date" th:field="*{nextVisitDate}">
+        </div>
+        <button type="submit">Update Prescription</button>
+    </form>
+
+    <a th:href="@{/prescriptions}" class="btn">Back to List</a>
+</div>
+</body>
+</html>
