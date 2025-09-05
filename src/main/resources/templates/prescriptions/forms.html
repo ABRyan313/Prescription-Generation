@@ -1,102 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}">Prescription Form</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a th:href="@{/prescriptions}">Home</a>
+    <a th:href="@{/reports/prescriptions/daywise}">Day-wise Table</a>
+    <a th:href="@{/reports/prescriptions/daywise/chart}">Day-wise Chart</a>
+    <a th:href="@{/reports/prescriptions/daywise/combined}">Combined View</a>
+</nav>
+<hr/>
+
 <div class="container">
     <h1 th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}"></h1>
 
-    <!-- CREATE FORM -->
-    <form th:if="${prescription.id == null}"
-          th:object="${prescription}"
-          th:action="@{/prescriptions}"
-          method="post"
-          class="prescription-form">
+    <form th:object="${prescription}"
+          th:action="${prescription.id != null} ? @{/prescriptions/{id}(id=${prescription.id})} : @{/prescriptions}"
+          method="post" class="prescription-form">
 
-        <div>
+        <!-- Global errors -->
+        <div th:if="${#fields.hasGlobalErrors()}" class="error">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <!-- Hidden ID for edit -->
+        <input type="hidden" th:field="*{id}" th:if="${prescription.id != null}"/>
+
+        <!-- Prescription Date -->
+        <div class="form-group">
             <label>Prescription Date:</label>
             <input type="date" th:field="*{prescriptionDate}" required>
+            <div th:if="${#fields.hasErrors('prescriptionDate')}" class="error" th:errors="*{prescriptionDate}"></div>
         </div>
-        <div>
+
+        <!-- Patient Name -->
+        <div class="form-group">
             <label>Patient Name:</label>
             <input type="text" th:field="*{patientName}" required>
+            <div th:if="${#fields.hasErrors('patientName')}" class="error" th:errors="*{patientName}"></div>
         </div>
-        <div>
+
+        <!-- Patient Age -->
+        <div class="form-group">
             <label>Patient Age:</label>
             <input type="number" th:field="*{patientAge}" min="0" max="120" required>
+            <div th:if="${#fields.hasErrors('patientAge')}" class="error" th:errors="*{patientAge}"></div>
         </div>
-        <div>
+
+        <!-- Gender -->
+        <div class="form-group">
             <label>Gender:</label>
             <select th:field="*{patientGender}" required>
                 <option th:value="MALE">Male</option>
                 <option th:value="FEMALE">Female</option>
                 <option th:value="OTHER">Other</option>
             </select>
+            <div th:if="${#fields.hasErrors('patientGender')}" class="error" th:errors="*{patientGender}"></div>
         </div>
-        <div>
+
+        <!-- Diagnosis -->
+        <div class="form-group">
             <label>Diagnosis:</label>
             <textarea th:field="*{diagnosis}"></textarea>
+            <div th:if="${#fields.hasErrors('diagnosis')}" class="error" th:errors="*{diagnosis}"></div>
         </div>
-        <div>
+
+        <!-- Medicines -->
+        <div class="form-group">
             <label>Medicines:</label>
             <textarea th:field="*{medicines}"></textarea>
+            <div th:if="${#fields.hasErrors('medicines')}" class="error" th:errors="*{medicines}"></div>
         </div>
-        <div>
+
+        <!-- Next Visit Date -->
+        <div class="form-group">
             <label>Next Visit Date:</label>
             <input type="date" th:field="*{nextVisitDate}">
+            <div th:if="${#fields.hasErrors('nextVisitDate')}" class="error" th:errors="*{nextVisitDate}"></div>
         </div>
-        <button type="submit">Save Prescription</button>
+
+        <button type="submit" class="btn-submit"
+                th:text="${prescription.id != null ? 'Update Prescription' : 'Save Prescription'}"></button>
     </form>
 
-    <!-- EDIT FORM -->
-    <form th:if="${prescription.id != null}"
-          th:object="${prescription}"
-          th:action="@{/prescriptions/{id}(id=${prescription.id})}"
-          method="post"
-          class="prescription-form">
-
-        <!-- Hidden field to bind ID -->
-        <input type="hidden" th:field="*{id}"/>
-
-        <div>
-            <label>Prescription Date:</label>
-            <input type="date" th:field="*{prescriptionDate}" required>
-        </div>
-        <div>
-            <label>Patient Name:</label>
-            <input type="text" th:field="*{patientName}" required>
-        </div>
-        <div>
-            <label>Patient Age:</label>
-            <input type="number" th:field="*{patientAge}" min="0" max="120" required>
-        </div>
-        <div>
-            <label>Gender:</label>
-            <select th:field="*{patientGender}" required>
-                <option th:value="MALE">Male</option>
-                <option th:value="FEMALE">Female</option>
-                <option th:value="OTHER">Other</option>
-            </select>
-        </div>
-        <div>
-            <label>Diagnosis:</label>
-            <textarea th:field="*{diagnosis}"></textarea>
-        </div>
-        <div>
-            <label>Medicines:</label>
-            <textarea th:field="*{medicines}"></textarea>
-        </div>
-        <div>
-            <label>Next Visit Date:</label>
-            <input type="date" th:field="*{nextVisitDate}">
-        </div>
-        <button type="submit">Update Prescription</button>
-    </form>
-
-    <a th:href="@{/prescriptions}" class="btn">Back to List</a>
+    <a th:href="@{/prescriptions}" class="btn-back">Back to List</a>
 </div>
+
+<footer class="footer">
+    <hr/>
+    <p>&copy; 2025 Prescription App</p>
+</footer>
+
 </body>
 </html>

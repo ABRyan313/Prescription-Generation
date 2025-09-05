@@ -1,32 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Prescription List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+
+<!-- Header -->
+<header class="app-header">
+    <h1>CMED</h1>
+    <p class="subtitle">Connecting People, Saving Lives</p>
+</header>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a th:href="@{/prescriptions}">Home</a>
+    <a th:href="@{/prescriptions/report}">📊 Reports</a>
+</nav>
+<hr/>
+
 <div class="container">
-    <h1>Prescription List</h1>
+    <h2>Prescription List</h2>
 
     <!-- Date Filter Form -->
     <form th:action="@{/prescriptions}" method="get" class="filter-form">
-        <div>
+        <div class="form-group">
             <label for="startDate">Start Date:</label>
             <input type="date" id="startDate" name="start" th:value="${startDate}">
         </div>
-        <div>
+        <div class="form-group">
             <label for="endDate">End Date:</label>
             <input type="date" id="endDate" name="end" th:value="${endDate}">
         </div>
-        <div>
-            <button type="submit" class="btn">Filter</button>
-        </div>
+        <button type="submit" class="btn">Filter</button>
     </form>
 
     <!-- Create Button -->
-    <div style="text-align:right; margin:10px 0;">
+    <div class="create-btn">
         <a th:href="@{/prescriptions/new}" class="btn">+ New Prescription</a>
+        <a th:href="@{/prescriptions/report}" class="btn">📊 Reports</a>
     </div>
 
     <!-- Prescription Table -->
@@ -45,17 +60,16 @@
         </thead>
         <tbody>
         <tr th:each="prescription : ${prescriptions}">
-            <td th:text="${prescription.prescriptionDate}"></td>
+            <td th:text="${prescription.prescriptionDate != null} ? ${#temporals.format(prescription.prescriptionDate,'yyyy-MM-dd')} : ''"></td>
             <td th:text="${prescription.patientName}"></td>
             <td th:text="${prescription.patientAge}"></td>
             <td th:text="${prescription.patientGender}"></td>
             <td th:text="${prescription.diagnosis}"></td>
             <td th:text="${prescription.medicines}"></td>
-            <td th:text="${prescription.nextVisitDate}"></td>
+            <td th:text="${prescription.nextVisitDate != null} ? ${#temporals.format(prescription.nextVisitDate,'yyyy-MM-dd')} : ''"></td>
             <td>
                 <a th:href="@{/prescriptions/{id}/edit(id=${prescription.id})}" class="btn">Edit</a>
-                <form th:action="@{/prescriptions/{id}/delete(id=${prescription.id})}"
-                      method="post" style="display:inline">
+                <form th:action="@{/prescriptions/{id}/delete(id=${prescription.id})}" method="post" style="display:inline">
                     <button type="submit" class="btn delete-btn">Delete</button>
                 </form>
             </td>
@@ -63,5 +77,12 @@
         </tbody>
     </table>
 </div>
+
+<!-- Footer -->
+<footer class="footer">
+    <hr/>
+    <p>&copy; 2025 Prescription App</p>
+</footer>
+
 </body>
 </html>

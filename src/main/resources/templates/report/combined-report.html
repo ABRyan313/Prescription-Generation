@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Day-wise Prescription Report</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+    <h1>CMED</h1>
+    <p class="subtitle">Connecting People, Saving Lives</p>
+</header>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a th:href="@{/prescriptions}">Home</a>
+    <a th:href="@{/prescriptions/report}">📊 Reports</a>
+</nav>
+<hr/>
+
+<main class="container">
+    <h2>Day-wise Prescription Report</h2>
+
+    <!-- Chart -->
+    <div style="width: 80%; margin: 20px auto;">
+        <canvas id="prescriptionChart"></canvas>
+    </div>
+
+    <!-- Table -->
+    <table>
+        <thead>
+        <tr>
+            <th>Day</th>
+            <th>Prescription Count</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${reportData}">
+            <td th:text="${row.day}"></td>
+            <td th:text="${row.count}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Back Button -->
+    <div style="margin-top: 20px;">
+        <a th:href="@{/prescriptions}" class="btn">Back to Prescriptions</a>
+    </div>
+</main>
+
+<!-- Chart JS -->
+<script th:inline="javascript">
+    const days = /*[[${days}]]*/ [];
+    const counts = /*[[${counts}]]*/ [];
+
+    const ctx = document.getElementById('prescriptionChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: days,
+            datasets: [{
+                label: 'Prescription Count',
+                data: counts,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+
+<!-- Footer -->
+<footer class="footer">
+    <hr/>
+    <p>&copy; 2025 CMED Prescription System</p>
+</footer>
+
+</body>
+</html>
