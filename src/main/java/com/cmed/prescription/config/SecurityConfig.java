@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,33 +13,25 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
     @Bean
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF for JWT-based stateless authentication
-                .csrf(csrf -> csrf.disable())
-
-                // All requests require authentication
+                .csrf(csrf -> csrf.disable()) // disable CSRF for simplicity (enable if needed with Thymeleaf forms)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/prescriptions/**").authenticated()
-                        .anyRequest().authenticated() // No anonymous access anywhere
+                        .anyRequest().permitAll()
                 )
-
-                // Custom login page for form-based fallback (optional)
                 .formLogin(form -> form
-                        .loginPage("/login") // redirect anonymous users here
+                        .loginPage("/login") // your custom login page
+                        .defaultSuccessUrl("/prescriptions", true) // where to go after success
                         .permitAll()
                 )
-
-                // Handle unauthorized access
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendRedirect("/login"))
-                )
-
-                // If using JWT, disable sessions
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
                 );
 
         return http.build();

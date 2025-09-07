@@ -31,16 +31,4 @@ public class AuthUserDetailsService implements UserDetailsService {
         UserEntity userEntity = userEntityOptional.get();
         return new AuthUser(userEntity);
     }
-
-    public boolean registerUser(AuthRequest request) {
-        if (userRepository.existsByUsername(request.username())) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-
-        UserEntity user = new UserEntity();
-        user.setUsername(request.username());
-        user.setPassword(passwordEncoder.encode(request.password()));
-
-        return userRepository.save(user);
-    }
 }
