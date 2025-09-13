@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}">Prescription Form</title>
+    <title th:text="*{id} != null ? 'Edit Prescription' : 'Create Prescription'">Prescription Form</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/forms.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,20 +11,20 @@
 
 <nav class="navbar">
     <a th:href="@{/prescriptions}">Home</a>
-    <a th:href="@{/reports/prescriptions/daywise}">Day-wise Table</a>
-    <a th:href="@{/reports/prescriptions/daywise/chart}">Day-wise Chart</a>
-    <a th:href="@{/reports/prescriptions/daywise/combined}">Combined View</a>
+    <a th:href="@{/prescriptions/report}">📊 Reports</a>
 </nav>
 <hr/>
 
 <div class="container">
-    <h1 th:text="${prescription.id != null ? 'Edit Prescription' : 'Create Prescription'}"></h1>
+    <h1 th:text="*{id} != null ? 'Edit Prescription' : 'Create Prescription'"></h1>
 
     <form th:object="${prescription}"
-          th:action="${prescription.id != null} ? @{/prescriptions/{id}(id=${prescription.id})} : @{/prescriptions}"
-          method="post" class="prescription-form">
+          th:action="*{id} != null ? @{/prescriptions/{id}(id=*{id})} : @{/prescriptions}"
+          method="post"
+          class="prescription-form">
 
-        <input type="hidden" th:field="*{id}" th:if="${prescription.id != null}"/>
+        <!-- Hidden ID only for edit -->
+        <input type="hidden" th:field="*{id}" th:if="${isEdit}"/>
 
         <div class="form-group">
             <label>Prescription Date:</label>
@@ -52,33 +52,12 @@
 
         <div class="form-group">
             <label>Diagnosis:</label>
-            <textarea th:field="*{diagnosis}"></textarea>
+            <textarea th:field="*{diagnosis}" required></textarea>
         </div>
 
         <div class="form-group">
             <label>Medicines (comma-separated):</label>
-            <textarea th:field="*{medicines}"></textarea>
-        </div>
-
-        <!-- RxNav Interactions -->
-        <div th:if="${interactions != null and !interactions.isEmpty()}" class="interactions-section">
-            <h2>Drug Interactions</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Drug 1</th>
-                    <th>Drug 2</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="interaction : ${interactions}">
-                    <td th:text="${interaction.minConceptItem1.name}"></td>
-                    <td th:text="${interaction.minConceptItem2.name}"></td>
-                    <td th:text="${interaction.description}"></td>
-                </tr>
-                </tbody>
-            </table>
+            <textarea th:field="*{medicines}" required></textarea>
         </div>
 
         <div class="form-group">
@@ -87,7 +66,7 @@
         </div>
 
         <button type="submit" class="btn-submit"
-                th:text="${prescription.id != null ? 'Update Prescription' : 'Save Prescription'}"></button>
+                th:text="*{id} != null ? 'Update Prescription' : 'Save Prescription'"></button>
     </form>
 
     <a th:href="@{/prescriptions}" class="btn-back">Back to List</a>
