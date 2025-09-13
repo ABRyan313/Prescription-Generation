@@ -1,6 +1,6 @@
 
 
-<img width="1335" height="630" alt="Capture" src="https://github.com/user-attachments/assets/28ff6246-a631-41ca-8cd2-0a822a4be3b8" />
+<img width="1326" height="608" alt="Capture" src="https://github.com/user-attachments/assets/258227ab-db28-4370-a504-2d9f5201feac" />
 
 
 # Prescription Management System
