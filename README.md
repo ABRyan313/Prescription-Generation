@@ -1,3 +1,8 @@
+
+
+<img width="1335" height="630" alt="Capture" src="https://github.com/user-attachments/assets/28ff6246-a631-41ca-8cd2-0a822a4be3b8" />
+
+
 # Prescription Management System
 
 A **Prescription Management System** built with **Spring Boot**, **Thymeleaf**, **Spring Security (JWT)**, and integrated with **RxNav API** for checking drug interactions. The system allows doctors to manage prescriptions, view interactions, and maintain patient records securely.
