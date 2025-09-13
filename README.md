@@ -197,7 +197,7 @@ mvn spring-boot:run
 * Enhance UI with **Bootstrap** or **Tailwind CSS**.
 * Add **role-based access** (admin, doctor, pharmacist).
 * Implement unit and integration tests for API endpoints.
-* Add **pagination and search filters** for prescription lists.
+* Add **pagination.
 * Store drug interaction history in database.
 
 ---
