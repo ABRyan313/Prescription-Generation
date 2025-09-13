@@ -31,7 +31,7 @@ A **Prescription Management System** built with **Spring Boot**, **Thymeleaf**, 
 
 - **Backend:** Java 17, Spring Boot 3, Spring Security, JWT, Spring Web, Spring Data JPA, Hibernate
 - **Frontend:** Thymeleaf, HTML5, CSS3
-- **Database:** MySQL (or any relational DB)
+- **Database:** H2 Database
 - **External APIs:** RxNav REST API for drug interactions
 - **Build Tool:** Maven
 - **Testing:** JUnit 5, Mockito
@@ -47,28 +47,13 @@ git clone https://github.com/yourusername/prescription-management.git
 cd prescription-management
 ````
 
-2. **Configure Database**
-
-* Create a MySQL database, e.g., `prescription_db`.
-* Update `application.properties`:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/prescription_db?useSSL=false&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=yourpassword
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
-```
-
-3. **Run the Application**
+2. **Run the Application**
 
 ```bash
 mvn spring-boot:run
 ```
 
-4. **Access the App**
+3. **Access the App**
 
 * Open your browser: [http://localhost:8080/prescriptions](http://localhost:8080/prescriptions)
 * You will be redirected to the **Login page**.
@@ -78,16 +63,17 @@ mvn spring-boot:run
 
 ## API Endpoints (Protected by JWT)
 
-| Method | Endpoint                     | Description                       |
-| ------ | ---------------------------- | --------------------------------- |
-| GET    | `/prescriptions`             | List all prescriptions            |
-| GET    | `/prescriptions/new`         | Show create prescription form     |
-| POST   | `/prescriptions`             | Create new prescription           |
-| GET    | `/prescriptions/{id}/edit`   | Show edit form for a prescription |
-| POST   | `/prescriptions/{id}`        | Update prescription               |
-| POST   | `/prescriptions/{id}/delete` | Delete prescription               |
-| POST   | `/auth/login`                | Authenticate user (JWT)           |
-| POST   | `/auth/register`             | Register new user                 |
+| Method  | Endpoint                     | Description                                         |
+| ------- | ---------------------------- | --------------------------------------------------- |
+| GET     | `/prescriptions`             | List all prescriptions (Thymeleaf view)             |
+| GET     | `/prescriptions/new`         | Show create prescription form (Thymeleaf)           |
+| POST    | `/prescriptions`             | Create new prescription (Thymeleaf form submission) |
+| GET     | `/prescriptions/{id}/edit`   | Show edit form for a prescription (Thymeleaf)       |
+| POST    | `/prescriptions/{id}`        | Update prescription (Thymeleaf form submission)     |
+| POST    | `/prescriptions/{id}/delete` | Delete prescription (Thymeleaf form submission)     |
+| **GET** | **`/api/v1/prescription`**   | **Return all prescriptions as JSON**                |
+| POST    | `/auth/login`                | Authenticate user (JWT)                             |
+| POST    | `/auth/register`             | Register new user                                   |
 
 ---
 
@@ -102,28 +88,97 @@ mvn spring-boot:run
 ## Project Structure
 
 ```
-src/main/java/com/cmed/prescription
 ├── controller
-│   ├── webController
-│   └── auth
+│   ├── restController
+│   │   └── PrescriptionRestController.java
+│   └── webController
+│       ├── LoginController.java
+│       ├── RegisterController.java
+│       ├── PrescriptionController.java
+│       └── PrescriptionReportController.java
+│
+├── mapper
+│   └── PrescriptionMapper.java
+│
 ├── model
 │   ├── domain
+│   │   ├── Prescription.java
+│   │   └── AuthUser.java
 │   └── dto
-├── repository
-├── service
+│       ├── CreatePrescriptionRequest.java
+│       ├── UpdatePrescriptionRequest.java
+│       ├── PrescriptionResponse.java
+│       ├── auth
+│       │   ├── AuthRequest.java
+│       │   └── AuthResponse.java
+│       └── rxcuiDto
+│           ├── InteractionPair.java
+│           └── RxNavResponse.java
+│
+├── persistence
+│   ├── entity
+│   │   ├── UserEntity.java
+│   │   └── PrescriptionEntity.java
+│   └── repository
+│       ├── UserRepository.java
+│       └── PrescriptionRepository.java
+│
 ├── security
-│   ├── JwtTokenService
-│   ├── AuthUserDetailsService
-│   └── SecurityConfig
+│   ├── AuthUserDetailsService.java
+│   ├── JwtTokenService.java
+│   └── SecurityConfig.java
+│
+├── service
+│   ├── AuthService.java
+│   ├── PrescriptionService.java
+│   ├── PrescriptionReportService.java
+│   └── RxNavService.java
+│
 └── PrescriptionApplication.java
+
+---
+
+
 ```
 
-* `controller/webController` – handles prescriptions pages.
-* `controller/auth` – handles login and registration.
-* `service` – business logic and RxNav integration.
-* `model/dto` – request/response DTOs for prescriptions, auth, and RxNav API.
-* `security` – JWT configuration and user authentication.
-* `templates` – Thymeleaf templates for UI.
+---
+
+1. **Controller Layer**
+
+   * `webController` → renders UI via Thymeleaf (prescriptions, reports).
+   * `restController` renders JSON response of prescription list(/api/v1/prescription).
+   * `auth` → handles login & registration.
+
+2. **Service Layer**
+
+   * Contains business logic for prescriptions, reports, and external API integration (RxNav).
+
+3. **Model Layer**
+
+   * `domain` → core objects.
+   * `dto` → organized by feature/module:
+
+     * `auth` → login/register requests & responses
+     * `rxcuiDto` → RxNav API DTOs
+     * prescriptions → directly in `dto`
+
+4. **Persistence Layer**
+
+   * `entity` → DB entities
+   * `repository` → Spring Data repositories
+
+5. **Security Layer**
+
+   * JWT, user authentication, and Spring Security configuration.
+
+6. **Mapper Layer**
+
+   * `PrescriptionMapper` for converting Entity ↔ DTO ↔ Domain.
+
+7. **Templates**
+
+   * Thymeleaf files remain in `src/main/resources/templates`
+   * Organized similarly: `prescriptions/`, `auth/`, `reports/`
 
 ---
 
