@@ -1,6 +1,8 @@
 package com.cmed.prescription.model.dto;
 
 import com.cmed.prescription.model.Gender;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +12,8 @@ import java.time.LocalDate;
 
 public record UpdatePrescriptionRequest (
 
+        @Id
+        @GeneratedValue
         Long id,
 
         @NotNull(message = "Prescription date is required")
