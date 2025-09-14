@@ -4,14 +4,18 @@ import com.cmed.prescription.mapper.PrescriptionMapper;
 import com.cmed.prescription.model.domain.Prescription;
 import com.cmed.prescription.model.dto.CreatePrescriptionRequest;
 import com.cmed.prescription.model.dto.UpdatePrescriptionRequest;
+import com.cmed.prescription.model.dto.rxNavDto.InteractionResponse;
+import com.cmed.prescription.model.dto.rxNavDto.PrescriptionWithInteractions;
 import com.cmed.prescription.persistence.entity.PrescriptionEntity;
 import com.cmed.prescription.persistence.repository.PrescriptionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +26,7 @@ public class PrescriptionService {
 
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionMapper mapper;
+    private final RxNavService rxNavService;
 
     /**
      * Get prescriptions between start and end date (inclusive) as domain objects.
@@ -69,6 +74,41 @@ public class PrescriptionService {
             throw new EntityNotFoundException("Prescription not found: " + id);
         }
         prescriptionRepository.deleteById(id);
+    }
+
+    /**
+     * Get all prescriptions with their RxNav interactions (for UI)
+     */
+    public List<PrescriptionWithInteractions> getAllWithInteractions(LocalDate start, LocalDate end) {
+        List<Prescription> prescriptions = getPrescriptions(start, end);
+
+        return prescriptions.stream().map(prescription -> {
+            List<InteractionResponse.Interaction> allInteractions = new ArrayList<>();
+
+            // Convert medicine names to RxCUIs safely
+            List<String> rxcuis = rxNavService.getRxcuisFromNames(prescription.getMedicines());
+
+            // Fetch interactions for each valid RxCUI
+            for (String rxcui : rxcuis) {
+                try {
+                    InteractionResponse resp = rxNavService.getLiteInteractions(rxcui);
+                    if (resp != null && resp.getInteractions() != null) {
+                        allInteractions.addAll(resp.getInteractions());
+                    }
+                } catch (WebClientResponseException.NotFound ex) {
+                    // Ignore 404 for unrecognized RxCUI
+                    System.out.println("RxCUI not found: " + rxcui);
+                } catch (Exception ex) {
+                    // Log other unexpected errors
+                    ex.printStackTrace();
+                }
+            }
+
+            // Return combined result
+            InteractionResponse combined = new InteractionResponse();
+            combined.setInteractions(allInteractions);
+            return new PrescriptionWithInteractions(prescription, combined.getInteractions());
+        }).collect(Collectors.toList());
     }
 
     /**

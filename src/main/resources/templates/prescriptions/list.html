@@ -55,21 +55,31 @@
             <th>Diagnosis</th>
             <th>Medicines</th>
             <th>Next Visit</th>
+            <th>Interactions</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="prescription : ${prescriptions}">
-            <td th:text="${prescription.prescriptionDate != null} ? ${#temporals.format(prescription.prescriptionDate,'yyyy-MM-dd')} : ''"></td>
-            <td th:text="${prescription.patientName}"></td>
-            <td th:text="${prescription.patientAge}"></td>
-            <td th:text="${prescription.patientGender}"></td>
-            <td th:text="${prescription.diagnosis}"></td>
-            <td th:text="${prescription.medicines}"></td>
-            <td th:text="${prescription.nextVisitDate != null} ? ${#temporals.format(prescription.nextVisitDate,'yyyy-MM-dd')} : ''"></td>
+        <tr th:each="pw : ${prescriptions}">
+            <td th:text="${pw.prescription.prescriptionDate != null} ? ${#temporals.format(pw.prescription.prescriptionDate,'yyyy-MM-dd')} : ''"></td>
+            <td th:text="${pw.prescription.patientName}"></td>
+            <td th:text="${pw.prescription.patientAge}"></td>
+            <td th:text="${pw.prescription.patientGender}"></td>
+            <td th:text="${pw.prescription.diagnosis}"></td>
+            <td th:text="${pw.prescription.medicines}"></td>
+            <td th:text="${pw.prescription.nextVisitDate != null} ? ${#temporals.format(pw.prescription.nextVisitDate,'yyyy-MM-dd')} : ''"></td>
             <td>
-                <a th:href="@{/prescriptions/{id}/edit(id=${prescription.id})}" class="btn">Edit</a>
-                <form th:action="@{/prescriptions/{id}/delete(id=${prescription.id})}" method="post" style="display:inline">
+                <ul th:if="${pw.interactions.size() > 0}">
+                    <li th:each="i : ${pw.interactions}">
+                        <strong th:text="${i.description}"></strong> -
+                        <span th:text="${#strings.arrayJoin(i.drugNames, ', ')}"></span>
+                    </li>
+                </ul>
+                <span th:if="${pw.interactions.size() == 0}">No interactions</span>
+            </td>
+            <td>
+                <a th:href="@{/prescriptions/{id}/edit(id=${pw.prescription.id})}" class="btn">Edit</a>
+                <form th:action="@{/prescriptions/{id}/delete(id=${pw.prescription.id})}" method="post" style="display:inline">
                     <button type="submit" class="btn delete-btn">Delete</button>
                 </form>
             </td>

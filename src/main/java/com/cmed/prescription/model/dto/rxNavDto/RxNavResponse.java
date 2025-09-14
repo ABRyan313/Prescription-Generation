@@ -1,4 +1,4 @@
-package com.cmed.prescription.model.dto.rxcuiApiDto;
+package com.cmed.prescription.model.dto.rxNavDto;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.cmed.prescription.controller.webController;
 import com.cmed.prescription.model.domain.Prescription;
 import com.cmed.prescription.model.dto.CreatePrescriptionRequest;
 import com.cmed.prescription.model.dto.UpdatePrescriptionRequest;
+import com.cmed.prescription.model.dto.rxNavDto.PrescriptionWithInteractions;
 import com.cmed.prescription.service.PrescriptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class PrescriptionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end,
             Model model) {
 
-        List<Prescription> prescriptions = prescriptionService.getPrescriptions(start, end);
-        model.addAttribute("prescriptions", prescriptions);
+        List<PrescriptionWithInteractions> prescriptionsWithInteractions  = prescriptionService.getAllWithInteractions(start, end);
+        model.addAttribute("prescriptions", prescriptionsWithInteractions);
         return "prescriptions/list";
     }
 
