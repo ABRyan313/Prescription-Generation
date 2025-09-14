@@ -1,6 +1,7 @@
 
 
-<img width="1326" height="608" alt="Capture" src="https://github.com/user-attachments/assets/258227ab-db28-4370-a504-2d9f5201feac" />
+<img width="1334" height="594" alt="Capture" src="https://github.com/user-attachments/assets/5a622f8d-5db5-4a92-b0e8-cf527d5271b8" />
+
 
 
 # Prescription Management System
@@ -116,9 +117,11 @@ mvn spring-boot:run
 │       ├── auth
 │       │   ├── AuthRequest.java
 │       │   └── AuthResponse.java
-│       └── rxcuiDto
-│           ├── InteractionPair.java
-│           └── RxNavResponse.java
+│       └── rxNavDto
+│           ├── InteractionResponse.java
+│           └── PrescriptionWithInteractions.java
+│           └── RxcuiResponse.java
+│           └── RxNavEntry.java
 │
 ├── persistence
 │   ├── entity
